@@ -194,6 +194,9 @@ namespace AT2_BetterWikiApp
                         // Open the text file using a stream reader.
                         using (BinaryReader br = new BinaryReader(File.Open(localFilePath, FileMode.Open), Encoding.UTF8, false))
                         {
+                            // Clear the current wiki before adding new items to it.
+                            Wiki.Clear();
+
                             int defAmount = br.ReadInt32();
                             for (int i = 0; i < defAmount; i++)
                             {
@@ -263,9 +266,23 @@ namespace AT2_BetterWikiApp
                 {
                     tabPage.Text = "New Item";
                 }
+
+                foreach (ViewDefinition page in tabPage.Controls)
+                {
+                    // Update the pages tab index
+                    page.UpdateTabIndex(tabController.TabPages.IndexOf(tabPage));
+                    
+                    // Update the pages item list reference
+                    Wiki.Sort();
+                    Information searchFor = page.GetBaseDefinition();
+                    int index = Wiki.BinarySearch(searchFor);
+
+                    page.UpdateDefIndex(index);
+                }
             }
             Wiki.Sort();
         }
+        // Update please???
         public bool AddItem(Information itemToAdd)
         {
             workModified = true;
